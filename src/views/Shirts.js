@@ -5,7 +5,7 @@ function Shirts() {
   return (
     <div>
       <h1>
-        Hello Shirts
+        Shirts
       </h1>
       <ShirtList />
     </div>

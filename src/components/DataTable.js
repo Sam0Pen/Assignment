@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableRow, TableContainer, Paper, TablePagination } from '@material-ui/core';
+import { Table, TableBody, TableContainer, TablePagination } from '@material-ui/core';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import mtStyles from '../styles/mtStyles';
@@ -7,7 +7,7 @@ import mtStyles from '../styles/mtStyles';
 
 const DataTable = (props) => {
   const classes = mtStyles();
-  const { columns, data, mapTableBody, isLoading, ...reset} = props
+  const {data, mapTableBody, isLoading } = props
 
   //Table
   const [rowsPerPage, setRowsPerPage] = useState(10);

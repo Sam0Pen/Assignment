@@ -1,11 +1,13 @@
 import React from 'react';
+import AccessoryList from '../components/AccessoryList';
 
 function Accessories() {
   return (
     <div>
       <h1>
-      Hello Accessories
+        Accessories
       </h1>
+      <AccessoryList />
     </div>
   );
 }

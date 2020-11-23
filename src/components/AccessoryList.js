@@ -4,12 +4,12 @@ import { TableCell, TableRow, Typography } from '@material-ui/core';
 import axios from 'axios';
 
 
-const JacketList = () => {
-  const [jackets, setJackets] = useState([]);
+const AccessoryList = () => {
+  const [accessories, setAccessories] = useState([]);
   const [manu, setManu] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [avail , setAvail] = useState({});
-  const [finjackets, setFinjack] = useState([]);
+  const [finaccessories, setFinaccessories] = useState([]);
 
   const makingManu = async (props) =>{
     console.log('doing manu', props);
@@ -46,17 +46,17 @@ const JacketList = () => {
   }
 
 
-  const fetchJackets = async () => {
+  const fetchAccessories = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('https://bad-api-assignment.reaktor.com/products/jackets');
-      const jacket = response.data;
-      let jackarray = []
+      const response = await axios.get('https://bad-api-assignment.reaktor.com/products/accessories');
+      const accessory = response.data;
+      let accessoryarray = []
       for (let i = 0; i < 100; i++){
-        jackarray.push(jacket[i])
+        accessoryarray.push(accessory[i])
       }
-      console.log('jacket', jackarray);
-      setFinjack(jackarray);
+      console.log('accessory', accessoryarray);
+      setFinaccessories(accessoryarray);
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -65,37 +65,37 @@ const JacketList = () => {
 
   const findingMatch = async () => {
     console.log('starting mapping', avail);
-    let jacketarray = finjackets;
+    let accessoriesarray = finaccessories;
     let avail2 = avail;
-    for(let i=0; i<jacketarray.length; i++){
-      let jacket = jacketarray[i];
-      let availabi = avail2[jacket.manufacturer];
-      let id = jacket.id.toUpperCase();
+    for(let i=0; i<accessoriesarray.length; i++){
+      let accessory = accessoriesarray[i];
+      let availabi = avail2[accessory.manufacturer];
+      let id = accessory.id.toUpperCase();
       console.log('dataid', id);
       for(let y=0; y< availabi.length; y++){
         let datapayload = availabi[y];
         let datapayloadId = datapayload.id;
         console.log('dataid', datapayloadId);
         if (datapayloadId === id){
-          jacket['datapayload'] = datapayload.DATAPAYLOAD;
-          jacketarray[i] = jacket;
+            accessory['datapayload'] = datapayload.DATAPAYLOAD;
+          accessoriesarray[i] = accessory;
           console.log('done', datapayload.DATAPAYLOAD);
           break
         }
       }
     }
     console.log('done');
-    setJackets(jacketarray);
+    setAccessories(accessoriesarray);
     setLoading(false);
   }
 
   useEffect(() => {
-    fetchJackets();
+    fetchAccessories();
   }, []);
 
   useEffect(() =>{
-    makingManu(finjackets);
-  }, [finjackets]);
+    makingManu(finaccessories);
+  }, [finaccessories]);
 
   useEffect(() => {
     gettingAvail();
@@ -106,8 +106,8 @@ const JacketList = () => {
   }, [avail]);
 
   useEffect(() => {
-    console.log('final', jackets);
-  }, [jackets]);
+    console.log('final', accessories);
+  }, [accessories]);
 
   const Slicer = (y) =>{
     if(y === undefined){
@@ -126,24 +126,24 @@ const JacketList = () => {
 
   const mapTableBody = (data) => {
     return (
-      data.map((jackets, index) => (
+      data.map((accessories, index) => (
         <TableRow
           style={index % 2 ? { background: "#FBFBFB" } : { background: "white" }}
           key={index}>
           <TableCell>
-            <Typography noWrap>{jackets.name}</Typography>
+            <Typography noWrap>{accessories.name}</Typography>
           </TableCell>
           <TableCell>
-              <Typography noWrap>{jackets.color}</Typography>
+              <Typography noWrap>{accessories.color}</Typography>
           </TableCell>
           <TableCell style={{ maxWidth: 300 }}>
-            <Typography noWrap>{jackets.price} €</Typography>
+            <Typography noWrap>{accessories.price} €</Typography>
           </TableCell>
           <TableCell>
-            <Typography noWrap>{jackets.manufacturer}</Typography>
+            <Typography noWrap>{accessories.manufacturer}</Typography>
           </TableCell>
           <TableCell>
-            <Typography noWrap>{Slicer(jackets.datapayload)}</Typography>
+            <Typography noWrap>{Slicer(accessories.datapayload)}</Typography>
           </TableCell>
         </TableRow>
       )
@@ -153,11 +153,11 @@ const JacketList = () => {
     <>
       <DataTable
         isLoading={isLoading}
-        data={jackets}
+        data={accessories}
         mapTableBody={mapTableBody} />
     </>
   );
 }
 
 
-export default JacketList;
+export default AccessoryList;
