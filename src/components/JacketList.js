@@ -1,116 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from './DataTable';
 import { TableCell, TableRow, Typography } from '@material-ui/core';
-import axios from 'axios';
+
+import FetchingData from './FetchingData';
+import MakingManufacturer from './MakingManufacturer';
+import FetchingAvailability from './FetchingAvailability';
+import FindingMatch from './FindingMatch';
 
 
 const JacketList = () => {
+
   const [jackets, setJackets] = useState([]);
-  const [manu, setManu] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [avail , setAvail] = useState({});
-  const [finjackets, setFinjack] = useState([]);
+  const [manufactors, setManufactors] = useState([]);
+  const [availability, setAvailability] = useState({});
+  const [fetchedData, setFetchedData] = useState([]);
 
-  const makingManu = async (props) =>{
-    console.log('doing manu', props);
-    let y = props.length;
-    let i = 0;
-    let array = [];
-    while (i < y){
-      array.push(props[i].manufacturer);
-      i++;
-    }
-    const uniqueManus = Array.from(new Set(array));
-    
-    setManu(uniqueManus);
-  }
-  const gettingAvail = async () => {
-    console.log('manu', manu);
+
+  useEffect( async () => {
     setLoading(true);
-    try {
-      let i = 0;
-      let y = manu.length;
-      let manufactorerArrays = {};
-      while (i < y) {
-        const response2 = await axios.get('https://bad-api-assignment.reaktor.com/availability/' + manu[i]);
-        manufactorerArrays[manu[i]]=response2.data.response; 
-        i++;
-      }
-      console.log(manufactorerArrays);
-      setAvail(manufactorerArrays);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-
-  }
-
-
-  const fetchJackets = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get('https://bad-api-assignment.reaktor.com/products/jackets');
-      const jacket = response.data;
-      let jackarray = []
-      for (let i = 0; i < 100; i++){
-        jackarray.push(jacket[i])
-      }
-      console.log('jacket', jackarray);
-      setFinjack(jackarray);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  }
-
-  const findingMatch = async () => {
-    console.log('starting mapping', avail);
-    let jacketarray = finjackets;
-    let avail2 = avail;
-    for(let i=0; i<jacketarray.length; i++){
-      let jacket = jacketarray[i];
-      let availabi = avail2[jacket.manufacturer];
-      let id = jacket.id.toUpperCase();
-      console.log('dataid', id);
-      for(let y=0; y< availabi.length; y++){
-        let datapayload = availabi[y];
-        let datapayloadId = datapayload.id;
-        console.log('dataid', datapayloadId);
-        if (datapayloadId === id){
-          jacket['datapayload'] = datapayload.DATAPAYLOAD;
-          jacketarray[i] = jacket;
-          console.log('done', datapayload.DATAPAYLOAD);
-          break
-        }
-      }
-    }
-    console.log('done');
-    setJackets(jacketarray);
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    fetchJackets();
+    let product = await FetchingData('jackets');
+    setFetchedData(product)
   }, []);
 
-  useEffect(() =>{
-    makingManu(finjackets);
-  }, [finjackets]);
+  useEffect( async () => {
+    console.log('fetched 1', fetchedData);
+    let manufacturers = await MakingManufacturer(fetchedData);
+    setManufactors(manufacturers);
+  }, [fetchedData])
+
+  useEffect( async () => {
+    console.log('fetched 2', manufactors);
+    let availabilityArray = await FetchingAvailability(manufactors);
+    setAvailability(availabilityArray);
+  }, [manufactors])
+
+  useEffect( async () => {
+    console.log('fetched 3', availability);
+    let mergedData = await FindingMatch(fetchedData, availability);
+    setJackets(mergedData);
+  }, [availability])
 
   useEffect(() => {
-    gettingAvail();
-  }, [manu]);
-
-  useEffect(() => {
-    findingMatch();
-  }, [avail]);
-
-  useEffect(() => {
+    if(jackets != '') (
+      setLoading(false)
+    )
     console.log('final', jackets);
-  }, [jackets]);
+}, [jackets]);
 
-  const Slicer = (y) =>{
-    if(y === undefined){
+
+  const Slicer = (y) => {
+    if (y === undefined) {
       return '';
     }
     let x = y.length;
@@ -134,7 +74,7 @@ const JacketList = () => {
             <Typography noWrap>{jackets.name}</Typography>
           </TableCell>
           <TableCell>
-              <Typography noWrap>{jackets.color}</Typography>
+            <Typography noWrap>{jackets.color}</Typography>
           </TableCell>
           <TableCell style={{ maxWidth: 300 }}>
             <Typography noWrap>{jackets.price} €</Typography>
@@ -147,7 +87,7 @@ const JacketList = () => {
           </TableCell>
         </TableRow>
       )
-    ))
+      ))
   };
   return (
     <>
