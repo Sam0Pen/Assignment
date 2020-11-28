@@ -1,5 +1,5 @@
 import React from 'react';
-import JacketList from '../components/JacketList';
+import JacketList from '../components/listmakers/JacketList';
 
 function Jackets() {
   return (

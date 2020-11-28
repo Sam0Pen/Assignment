@@ -1,5 +1,5 @@
 import React from 'react';
-import AccessoryList from '../components/AccessoryList';
+import AccessoryList from '../components/listmakers/AccessoryList';
 
 function Accessories() {
   return (

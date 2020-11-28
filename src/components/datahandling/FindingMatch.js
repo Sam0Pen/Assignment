@@ -1,5 +1,3 @@
-import React from 'react';
-
 const FindingMatch = async (fetchedData, availability) => {
     console.log('starting mapping', availability);
     console.log('data', fetchedData)

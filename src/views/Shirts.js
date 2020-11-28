@@ -1,5 +1,5 @@
 import React from 'react';
-import ShirtList from '../components/ShirtList';
+import ShirtList from '../components/listmakers/ShirtList';
 
 function Shirts() {
   return (
